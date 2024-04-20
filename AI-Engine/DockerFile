@@ -1,7 +1,0 @@
-FROM python3 AS base
-
-RUN ["apt install python3-flask", "-y"]
-ENV FLASK_APP=hello.py
-ENV FLASK_ENV=development
-ENTRYPOINT [ "flask run" ]
-
