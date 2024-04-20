@@ -1,19 +1,107 @@
 import { useState } from 'react';
 
-function Square({ value, onSquareClick }) {
+function Square({ value, onSquareClick, highlight }) {
+  const squareClassName = `square ${highlight ? 'highlighted' : ''}`;
+
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button className={squareClassName} onClick={onSquareClick} disabled={!highlight}>
       {value}
+      {highlight && <span className="highlight-text">·</span>}
     </button>
   );
 }
 
 function Board({ xIsNext, squares, onPlay }) {
+  const boardSize = 8;
+
+  function calculateFlippedSquares(i) {
+    const flippedSquares = [];
+    // Define the directions to check for valid flips
+    const directions = [
+      [-1, -1], // NW
+      [-1, 0],  // N
+      [-1, 1],  // NE
+      [0, -1],  // W
+      [0, 1],   // E
+      [1, -1],  // SW
+      [1, 0],   // S
+      [1, 1],   // SE
+    ];
+
+    // Check each direction for valid flips
+    directions.forEach(([dx, dy]) => {
+      let x = i % boardSize;
+      let y = Math.floor(i / boardSize);
+      let validFlip = false;
+      let flipIndices = [];
+
+      while (true) {
+        x += dx;
+        y += dy;
+        const index = y * boardSize + x;
+
+        if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) {
+          break; // Out of bounds
+        }
+
+        if (squares[index] === null) {
+          break; // Empty square
+        }
+
+        if (squares[index] === (xIsNext ? 'X' : 'O')) {
+          validFlip = true;
+          break;
+        }
+
+        flipIndices.push(index);
+      }
+
+      if (validFlip) {
+        flippedSquares.push(...flipIndices);
+      }
+    });
+
+    return flippedSquares;
+  }
+
+  function calculateValidMoves() {
+    const validMoves = [];
+    for (let i = 0; i < boardSize * boardSize; i++) {
+      if (!squares[i]) {
+        const flippedSquares = calculateFlippedSquares(i);
+        if (flippedSquares.length > 0) {
+          validMoves.push(i);
+        }
+      }
+    }
+    console.log(xIsNext)
+    console.log(validMoves)
+
+    return validMoves;
+  }  
   function handleClick(i) {
-    if (calculateWinner(squares) || squares[i]) {
+    const validMoves = calculateValidMoves();
+    if (currentMove === 64 || squares[i]) {
       return;
     }
     const nextSquares = squares.slice();
+    const flippedSquares = calculateFlippedSquares(i);
+    // const validMoves = calculateValidMoves();
+
+
+    if (flippedSquares.length >= 0) {
+      flippedSquares.forEach((index) => {
+        nextSquares[index] = xIsNext ? 'X' : 'O';
+      });
+    }
+
+    // if (validMoves.length >= 0) {
+    //   validMoves.forEach((index) => {
+    //     nextSquares[index] = 'G';
+    //   });
+    // }
+
+
     if (xIsNext) {
       nextSquares[i] = 'X';
     } else {
@@ -21,42 +109,71 @@ function Board({ xIsNext, squares, onPlay }) {
     }
     onPlay(nextSquares);
   }
-
-  const winner = calculateWinner(squares);
+  const validMoves = calculateValidMoves();
   let status;
-  if (winner) {
-    status = 'Winner: ' + winner;
-  } else {
+  if (validMoves.length === 0) {
+    const winner = countPieces(squares);
+    if (winner != "Draw") {
+      // console.log('w')
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Draw';
+      // console.log('D')
+
+    };
+    } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+    // console.log('n')
+
   }
+  // const winner = calculateWinner(squares);
+  // let status;
+  // if (winner) {
+  //   status = 'Winner: ' + winner;
+  // } else {
+  //   status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+  // }
+
 
   return (
     <>
       <div className="status">{status}</div>
-      <div className="board-row">
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
-      </div>
+      {Array.from({ length: boardSize }).map((_, row) => (
+        <div className="board-row" key={row}>
+          {Array.from({ length: boardSize }).map((_, col) => {
+            const index = row * boardSize + col;
+            const isMoveValid = validMoves.includes(index);
+            let value = squares[index]; // Initialize value
+            
+            return (
+              <Square
+                key={index}
+                value={squares[index]}
+                onSquareClick={() => handleClick(index)}
+                highlight={isMoveValid} // Add this prop to Square component
+              />
+            );
+          })}
+        </div>
+      ))}
     </>
-  );
+  ); 
 }
 
 export default function Game() {
-  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [history, setHistory] = useState([initializeBoard()]);
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
+
+  function initializeBoard() {
+    const initialSquares = Array(64).fill(null); // Assuming a 64-square board
+    initialSquares[27] = 'O'; // Black piece
+    initialSquares[28] = 'X'; // White piece
+    initialSquares[35] = 'X'; // White piece
+    initialSquares[36] = 'O'; // Black piece
+    return initialSquares;
+  }  
 
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -67,49 +184,45 @@ export default function Game() {
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
   }
-
-  const moves = history.map((squares, move) => {
-    let description;
-    if (move > 0) {
-      description = 'Go to move #' + move;
-    } else {
-      description = 'Go to game start';
-    }
-    return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
-      </li>
-    );
-  });
+  const moves = history.map((squares, move) => (
+    <li key={move}>
+      {move === 0 && (
+        <button onClick={() => jumpTo(move)}>Go to game start</button>
+      )}
+    </li>
+  ));
+    
 
   return (
     <div className="game">
       <div className="game-board">
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
-      <div className="game-info">
-        <ol>{moves}</ol>
-      </div>
     </div>
   );
 }
 
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+
+function countPieces(squares) {
+  let count_X = 0;
+  let count_O = 0;
+  for (let row = 0; row < 8; row++) {
+    for (let col = 0; col < 8; col++) {
+      const index = row * 8 + col;
+      const cell = squares[index];
+      if (cell === 'X') {
+        count_X++;
+      } else if (cell === 'O') {
+        count_O++;
+      }
     }
   }
-  return null;
+  if (count_O > count_X) {
+    return "O";
+  } else if (count_X > count_O){
+    return "X";
+  } else{
+    return "Draw";
+  }
 }
+
