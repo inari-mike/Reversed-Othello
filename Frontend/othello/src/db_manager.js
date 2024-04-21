@@ -15,14 +15,19 @@ export class DBManager {
         };
 
         const queryString = new URLSearchParams(params).toString();
-        const res = await fetch(`${this.endpoints.get_choice}?${queryString}`);
-        const data = await res.json();
+        const res = await fetch(
+            `${this.endpoints.get_choice}?${queryString}`,
+            {mode: 'no-cors'}
+        );
+        // const data = await res.json(); // TODO
+        const data = [200, "ready", '7,0']; // FAKE
         return data;
     }
 }
 
 // // Demo usage
 // const dm = new DBManager();
+
 // dm.get_choice("...........................OX......XO...........................")
 //     .then((res) => console.log(res))
 //     .catch((err) => console.error(err));
