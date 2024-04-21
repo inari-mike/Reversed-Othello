@@ -21,7 +21,7 @@ class DBManager:
     def update_record(self, hash_of_state: int | str, action: str):
         params = {
             "hash_of_state": str(hash_of_state),
-            "action": json.dumps(action)
+            "action": action
         }
         res = requests.get(
             self.endpoints["update_record"],

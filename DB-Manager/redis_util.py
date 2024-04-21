@@ -18,7 +18,7 @@ or
 
 class Redis:
 
-    def __init__(self, host='localhost', port=6379, db=0, decode_responses=True) -> None:
+    def __init__(self, host='redis-stack', port=6379, db=0, decode_responses=True) -> None:
         self.host = host
         self.port = port
         self.db = db
