@@ -145,9 +145,10 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
     } else {
       const nextSquares = squares.slice();
       console.log(nextSquares);
-  
+      const strState = nextSquares.map(item => (item === null ? '.' : item)).join('');
       // TODO: wait for backend
-      dm.get_choice("...........................OX......XO...........................")
+      console.log(strState)
+      dm.get_choice(strState)
         .then((res) => console.log(res))
         .catch((err) => console.error(err));
 
