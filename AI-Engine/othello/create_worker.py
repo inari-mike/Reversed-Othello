@@ -40,7 +40,7 @@ if __name__ == '__main__':
     # print("best_move_str:", best_move_str)
 
     # call DB Manager
-    dm = DBManager(host="localhost") # TODO
+    dm = DBManager() # TODO
     hash_of_state = hashlib.sha256(game_state_str.encode('ascii')).hexdigest()
     
     try:
