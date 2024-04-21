@@ -168,23 +168,42 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
       // processResponse(strState)
       //   .then(result => console.log('Processed result:', result))
       //   .catch(err => console.error('Error processing response:', err));
-      const res = dm.get_choice(strState);
-      if (res[1] === 'please wait(0)') {
-        const waitUntil = res[2]; // Assuming waitUntil is a valid timestamp
-        // await waitUntilTimestamp(waitUntil); // Implement this function to wait until the specified time
-        // return processResponse(state); // Recurse to get the updated response
-        const currentTimestamp = Date.now(); // Current timestamp in milliseconds
-        const timeDifference = waitUntil - currentTimestamp; // Time difference in milliseconds
-        const secondsRemaining = Math.ceil(timeDifference / 1000);
-        status = "Please wait ${seconds}s"
-      } else {
-        const [x,y] = res[1].split(',');
-        const index = Number(x) * 8 + Number(y);
-        handleClick(index)
 
+
+      const handle_res = (res, tried_times) => {
+        if (res[1] === 'ready') {
+          const x = Number(res[2][0]);
+          const y = Number(res[2][2]);
+          const index = Number(x) * 8 + Number(y);
+          console.log("handle_res", index)
+          handleClick(index)
+  
+        } else if (res[1] === 'please wait(0)') {
+          // const waitUntil = res[2]; // Assuming waitUntil is a valid timestamp
+          // // await waitUntilTimestamp(waitUntil); // Implement this function to wait until the specified time
+          // // return processResponse(state); // Recurse to get the updated response
+          // const currentTimestamp = Date.now(); // Current timestamp in milliseconds
+          // const timeDifference = waitUntil - currentTimestamp; // Time difference in milliseconds
+          // const secondsRemaining = Math.ceil(timeDifference / 1000);
+          // status = "Please wait ${seconds}s"
+
+          // TODO: wait 3s
+          ai_make_choice(tried_times + 1)
+        }
+        //   .then((res) => console.log(res))
+        //   .catch((err) => console.error(err));
       }
-      //   .then((res) => console.log(res))
-      //   .catch((err) => console.error(err));
+
+      const ai_make_choice = (tried_times) => {
+        if (tried_times < 3) {
+          dm.get_choice(strState)
+            .then(res=>handle_res(res, tried_times))
+            .catch((err) => console.error(err));
+        }
+      }
+
+      ai_make_choice(0)
+      
 
     }
   
