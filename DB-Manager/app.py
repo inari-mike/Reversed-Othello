@@ -6,9 +6,10 @@ import datetime
 
 app = Flask(__name__)
 redis_handler = Redis() # ATTENTION: no arg for docker compose
-wait_time_default = 1000 # million sec
+
 ai_handler = AIEngine(port=3002)
-time_limit_default = 1000 # 1 sec, 1000 million sec
+time_limit_default = 3000 # 3 sec, 3000 million sec
+extra_wait_time = 1000 # 1 sec, 1000 million sec, in case of network issue
 
 @app.route('/')
 def hello():
@@ -21,18 +22,19 @@ def get_choice():
     example get args:
     ?state=XO.X
     """
-    print("hit get_choice!!!")
+    # print("hit get_choice!!!")
     state = request.args.get('state')
     # hash_of_state = hash(state) # TODO
     hash_of_state = hashlib.sha256(state.encode('ascii')).hexdigest()
-    print(state)
-    print(hash_of_state)
+    # print(state)
+    # print(hash_of_state)
 
     record = redis_handler.get_record(hash_of_state)
+    current_timestamp = int(datetime.now().timestamp())
     
     if record is None:
         
-        print("record is None:", record)
+        # print("record is None:", record)
         # TODO here call create agent
         # create new agent
         ai_handler.create_agent(
@@ -42,9 +44,12 @@ def get_choice():
                 
         redis_handler.create_record(
             hash_of_state=hash_of_state,
-            wait_time=wait_time_default
+            wait_time=time_limit_default + extra_wait_time
         )
-        return jsonify(200, "please wait(0)")
+        
+        expire_timestamp = current_timestamp + time_limit_default + extra_wait_time
+        
+        return jsonify(200, "please wait(0)", expire_timestamp)
     
     else:
         
@@ -52,9 +57,8 @@ def get_choice():
         
         if record["action"] is None:
             expire_timestamp = int(record["expire_timestamp"])
-            current_timestamp = int(datetime.now().timestamp())
             
-            if expire_timestamp < current_timestamp + 5: # 5 more sec for waiting
+            if current_timestamp > expire_timestamp: # over due
                 return jsonify(200, "please wait(1)", expire_timestamp)
                 
             else:
