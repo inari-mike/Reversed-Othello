@@ -36,7 +36,7 @@ const OthelloGame = () => {
   const handleGoHome = () => {
     history.push('/'); // Navigate to OthelloPage
   };
-
+//
   return (
     <div className="othello-game">
       <h1>Othello Game</h1>
