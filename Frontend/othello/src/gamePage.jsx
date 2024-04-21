@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'; // Import useHistory
 import OthelloBoard from './OthelloBoard'; // Import your 8x8 board component
 import {Square, Board} from './OthelloBoard';
 import './styling_for_game_page.css'
+
 const OthelloGame = () => {
   const [history, setHistory] = useState([initializeBoard()]);
   const [currentMove, setCurrentMove] = useState(0);

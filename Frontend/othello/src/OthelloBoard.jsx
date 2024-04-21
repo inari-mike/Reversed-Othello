@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import './OthelloBoardStyle.css'
 import axios from 'axios'
+import { DBManager } from './db_manager';
 
 export function Square({ value, onSquareClick, highlight, xIsNext}) {
   const squareClassName = `square ${highlight ? 'highlighted' : ''}`;
@@ -17,6 +18,8 @@ export function Square({ value, onSquareClick, highlight, xIsNext}) {
 export function Board({ xIsNext, squares, onPlay, flag }) {
   const boardSize = 8;
   let validMoves = calculateValidMoves();
+  const dm = new DBManager();
+
   function calculateFlippedSquares(i) {
     const flippedSquares = [];
     // Define the directions to check for valid flips
@@ -66,6 +69,7 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
 
     return flippedSquares;
   }
+
   function calculateValidMoves() {
     const validMoves = [];
     for (let i = 0; i < boardSize * boardSize; i++) {
@@ -141,9 +145,11 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
     } else {
       const nextSquares = squares.slice();
       console.log(nextSquares);
-
-      
-
+  
+      // TODO: wait for backend
+      dm.get_choice("...........................OX......XO...........................")
+        .then((res) => console.log(res))
+        .catch((err) => console.error(err));
 
     }
   
