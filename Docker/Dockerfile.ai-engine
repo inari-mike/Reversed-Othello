@@ -3,8 +3,8 @@ FROM python:latest AS base
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y git
-RUN git clone -b ai-engine https://github.com/inari-mike/Reversed-Othello.git /app
-RUN git checkout ai-engine
+RUN git clone https://github.com/inari-mike/Reversed-Othello.git /app
+RUN git checkout main
 
 WORKDIR /app/AI-Engine
 
