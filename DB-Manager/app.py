@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from redis_util import Redis
 import hashlib
 from ai_engine import AIEngine
-import datetime
+from datetime import datetime
 
 app = Flask(__name__)
 redis_handler = Redis() # ATTENTION: no arg for docker compose
