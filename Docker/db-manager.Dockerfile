@@ -13,4 +13,5 @@ RUN pip install redis
 
 EXPOSE 3001
 RUN chmod +x run.sh
-ENTRYPOINT [ "sh", "run.sh" ]
+ENTRYPOINT [ "python3", "app.py" ]
+# ENTRYPOINT [ "sh", "run.sh" ]
