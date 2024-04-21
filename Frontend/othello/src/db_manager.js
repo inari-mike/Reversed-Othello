@@ -20,14 +20,6 @@ export class DBManager {
             // {mode: 'no-cors'}
         );
         const data = await res.json(); // TODO/
-        // const data = [200, "ready", '7,0']; // FAKE
         return data;
     }
 }
-
-// // Demo usage
-// const dm = new DBManager();
-
-// dm.get_choice("...........................OX......XO...........................")
-//     .then((res) => console.log(res))
-//     .catch((err) => console.error(err));
