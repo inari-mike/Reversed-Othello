@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  ai-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai-engine
+    ports:
+      - "3002:3002"
+    command: --host=0.0.0.0
+    container_name: ai-engine-dev
+    image: ai-engine-test
+
+  db-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile.db-manager
+    ports:
+      - "3001:3001"
+    command: --host=0.0.0.0
+    container_name: db-manager-dev
+    image: db-manager-test
+
+  redis-stack:
+    image: redis/redis-stack:latest
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    container_name: redis-dev

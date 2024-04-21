@@ -3,8 +3,10 @@ import { useState, useEffect  } from 'react';
 import GameModal from './GameModal';
 
 import './OthelloBoardStyle.css'
+import axios from 'axios'
+import { DBManager } from './db_manager';
 
-function Square({ value, onSquareClick, highlight }) {
+export function Square({ value, onSquareClick, highlight, xIsNext}) {
   const squareClassName = `square ${highlight ? 'highlighted' : ''}`;
 
   return (
@@ -15,19 +17,10 @@ function Square({ value, onSquareClick, highlight }) {
   );
 }
 
-function Board({ xIsNext, squares, onPlay }) {
+export function Board({ xIsNext, squares, onPlay, flag }) {
   const boardSize = 8;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Function to open the modal
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  // Function to close the modal
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  let validMoves = calculateValidMoves();
+  const dm = new DBManager();
 
   function calculateFlippedSquares(i) {
     const flippedSquares = [];
@@ -89,9 +82,8 @@ function Board({ xIsNext, squares, onPlay }) {
         }
       }
     }
-    // console.log(xIsNext)
-    // console.log(validMoves)
-    //seems as though there is a loop constantly runnning here
+    console.log(xIsNext)
+    console.log(validMoves)
 
     return validMoves;
   }  
@@ -102,7 +94,6 @@ function Board({ xIsNext, squares, onPlay }) {
     // }
     const nextSquares = squares.slice();
     const flippedSquares = calculateFlippedSquares(i);
-    // const validMoves = calculateValidMoves();
 
 
     if (flippedSquares.length >= 0) {
@@ -111,36 +102,50 @@ function Board({ xIsNext, squares, onPlay }) {
       });
     }
 
-    // if (validMoves.length >= 0) {
-    //   validMoves.forEach((index) => {
-    //     nextSquares[index] = 'G';
-    //   });
-    // }
 
 
     if (xIsNext) {
       nextSquares[i] = 'X';
     } else {
       nextSquares[i] = 'O';
-    }
-    onPlay(nextSquares);
-    const winner = countPieces(nextSquares);
-    if (winner !== "Draw" || validMoves.length === 0) {
-      openModal(); // Open modal when there's a winner or draw
-    }
-  }
-  function handleReset() {
-    // Reset the game state here
-    closeModal(); // Close the modal after resetting
-  }
-
-  function handleBackToGame() {
-    // Handle navigation back to the game page
-    closeModal(); // Close the modal after navigating back
+    };
+    onPlay(nextSquares,flag,!xIsNext);
+    if (validMoves.length === 0){
+      console.log("ha????");
+      // flag = 1-flag;
+      // console.log(xIsNext);
+      // xIsNext = !xIsNext;
+      // console.log(xIsNext);
+      // validMoves = calculateValidMoves();
+    };    
   }
 
-  //useEffect(() => {
-  const validMoves = calculateValidMoves();
+  // async function processResponse(state) {
+  //   try {
+  //     const res = await dm.get_choice(state);
+  
+  //     if (res[1] === 'please wait(0)') {
+  //       const waitUntil = res[2]; // Assuming waitUntil is a valid timestamp
+  //       await waitUntilTimestamp(waitUntil); // Implement this function to wait until the specified time
+  //       return processResponse(state); // Recurse to get the updated response
+  //     } else {
+  //       return res[1];
+  //     }
+  //   } catch (err) {
+  //     console.error('Error fetching data:', err);
+  //     // Handle error appropriately (e.g., return an error message)
+  //   }
+  // }
+  
+
+  if (validMoves.length === 0){
+    flag = 1-flag;
+    console.log(xIsNext);
+    xIsNext = !xIsNext;
+    console.log(xIsNext);
+    validMoves = calculateValidMoves();
+  };
+
   let status;
   if (validMoves.length === 0) {
     const winner = countPieces(squares);
@@ -151,26 +156,43 @@ function Board({ xIsNext, squares, onPlay }) {
       status = 'Winner: ' + winner;
     } else {
       status = 'Draw';
-      alert('Draw'); // Popup for draw
-
-      // console.log('D')
-      
     };
     //setIsModalOpen(true); // Show the modal
     } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
-    // console.log('n')
+    };
+    
+    // if (xIsNext) {
+    //   status = "Your turn(X)!";
+    // } else {
+    //   const nextSquares = squares.slice();
+    //   console.log(nextSquares);
+    //   const strState = nextSquares.map(item => (item === null ? '.' : item)).join('');
+    //   // TODO: wait for backend
+    //   console.log(strState)
+    //   // processResponse(strState)
+    //   //   .then(result => console.log('Processed result:', result))
+    //   //   .catch(err => console.error('Error processing response:', err));
+    //   const res = dm.get_choice(strState);
+    //   if (res[1] === 'please wait(0)') {
+    //     const waitUntil = res[2]; // Assuming waitUntil is a valid timestamp
+    //     // await waitUntilTimestamp(waitUntil); // Implement this function to wait until the specified time
+    //     // return processResponse(state); // Recurse to get the updated response
+    //     const currentTimestamp = Date.now(); // Current timestamp in milliseconds
+    //     const timeDifference = waitUntil - currentTimestamp; // Time difference in milliseconds
+    //     const secondsRemaining = Math.ceil(timeDifference / 1000);
+    //     status = "Please wait ${seconds}s"
+    //   } else {
+    //     const [x,y] = res[1].str.split(',');
+    //     const index = Number(x) * 8 + Number(y);
+    //     handleClick(index)
 
-  }
-//}, [squares,xIsNext]);
-  // const winner = calculateWinner(squares);
-  // let status;
-  // if (winner) {
-  //   status = 'Winner: ' + winner;
-  // } else {
-  //   status = 'Next player: ' + (xIsNext ? 'X' : 'O');
-  // }
+    //   }
+    //   //   .then((res) => console.log(res))
+    //   //   .catch((err) => console.error(err));
 
+    // }
+  
 
   return (
     <>
@@ -188,6 +210,7 @@ function Board({ xIsNext, squares, onPlay }) {
                 value={squares[index]}
                 onSquareClick={() => handleClick(index)}
                 highlight={isMoveValid} // Add this prop to Square component
+                xIsNext={xIsNext}
               />
             );
           })}
@@ -200,6 +223,11 @@ function Board({ xIsNext, squares, onPlay }) {
     </>
   ); 
 }
+
+// export function jumpto(){
+//   const [currentMove, setCurrentMove] = useState(0);
+//   setCurrentMove(0);
+// };
 
 export default function Game() {
   const [history, setHistory] = useState([initializeBoard()]);
@@ -225,19 +253,12 @@ export default function Game() {
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
   }
-  const moves = history.map((squares, move) => (
-    <li key={move}>
-      {move === 0 && (
-        <button onClick={() => jumpTo(move)}>Go to game start</button>
-      )}
-    </li>
-  ));
-    
 
   return (
     <div className="game">
       <div className="game-board">
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <button onClick={() => jumpTo(0)}>Go to game start</button>
       </div>
     </div>
   );
