@@ -21,14 +21,16 @@ if __name__ == '__main__':
                 ] for row in range(8)
             ],
         boardSize=8,
-        nextPlayerToMove=othello.PLAYER2 # X
+        nextPlayerToMove=othello.PLAYER1 # AI always play O
     )
-
+    print("Current game state:")
+    print(game_state)
     print("Available Moves:")
     i = 0
     for move in game_state.generateMoves():
         i = i + 1
         print(f"{i}. {str(move)}")
+    print(f"there are {i} available moves.")
     print("Start Searching...\r")
 
     time_limit = int(sys.argv[2])
@@ -38,7 +40,7 @@ if __name__ == '__main__':
     # print("best_move_str:", best_move_str)
 
     # call DB Manager
-    dm = DBManager(host="localhost")
+    dm = DBManager(host="localhost") # TODO
     hash_of_state = hashlib.sha256(game_state_str.encode('ascii')).hexdigest()
     
     try:
