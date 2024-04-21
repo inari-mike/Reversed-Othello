@@ -150,8 +150,10 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
     if (winner != "Draw") {
       // console.log('w')
       status = 'Winner: ' + winner;
+      alert(status);
     } else {
       status = 'Draw';
+      alert(status);
     };
     } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
