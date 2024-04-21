@@ -1,4 +1,4 @@
-flask==2.0.1
-redis==redis-5.0.3
-request
+flask
+redis
+requests
 flask_cors

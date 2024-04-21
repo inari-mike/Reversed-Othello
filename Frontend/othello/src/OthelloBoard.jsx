@@ -109,7 +109,7 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
     };
     onPlay(nextSquares,flag,!xIsNext);
     if (validMoves.length === 0){
-      console.log("ha????");
+      // console.log("ha????");
       // flag = 1-flag;
       // console.log(xIsNext);
       // xIsNext = !xIsNext;
@@ -138,35 +138,38 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
 
   if (validMoves.length === 0){
     flag = 1-flag;
-    console.log(xIsNext);
+    // console.log(xIsNext);
     xIsNext = !xIsNext;
-    console.log(xIsNext);
+    // console.log(xIsNext);
     validMoves = calculateValidMoves();
   };
 
   let status;
+  let game_not_over = false;
+
   if (validMoves.length === 0) {
     const winner = countPieces(squares);
     if (winner != "Draw") {
       // console.log('w')
       status = 'Winner: ' + winner;
-      alert(status);
+      // alert(status);
     } else {
       status = 'Draw';
-      alert(status);
-    };
-    } else {
+      // alert(status);
+    }
+  } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
-    };
+    game_not_over = true;
+  };
     
+  if (game_not_over) {
     if (xIsNext) {
       status = "Your turn(X)!";
     } else {
       const nextSquares = squares.slice();
-      console.log(nextSquares);
+      // console.log(nextSquares);
       const strState = nextSquares.map(item => (item === null ? '.' : item)).join('');
-      // TODO: wait for backend
-      console.log(strState)
+    
       // processResponse(strState)
       //   .then(result => console.log('Processed result:', result))
       //   .catch(err => console.error('Error processing response:', err));
@@ -177,23 +180,27 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
           const x = Number(res[2][0]);
           const y = Number(res[2][2]);
           const index = Number(x) * 8 + Number(y);
-          console.log("handle_res", index)
           handleClick(index)
   
-        } else if (res[1] === 'please wait(0)') {
-          // const waitUntil = res[2]; // Assuming waitUntil is a valid timestamp
-          // // await waitUntilTimestamp(waitUntil); // Implement this function to wait until the specified time
-          // // return processResponse(state); // Recurse to get the updated response
-          // const currentTimestamp = Date.now(); // Current timestamp in milliseconds
-          // const timeDifference = waitUntil - currentTimestamp; // Time difference in milliseconds
-          // const secondsRemaining = Math.ceil(timeDifference / 1000);
-          // status = "Please wait ${seconds}s"
+        } else if (String(res[1]).includes("please wait")) {
+          console.log(res)
+          const ready_timestamp_msec = Number.parseInt(res[2]) * 1000
+          const current_timestamp_msec = Date.now()
+          const wait_time_msec = ready_timestamp_msec - current_timestamp_msec
+          console.log("sleep... in seconds:", wait_time_msec / 1000)
+          console.log("sleep... in seconds:", 5)
+          setTimeout(
+            () => {
+              console.log("wake up!");
+              ai_make_choice(tried_times + 1)
+            },
+            5000
+          )          
 
-          // TODO: wait 3s
-          ai_make_choice(tried_times + 1)
+        } else {
+          console.error(res)
         }
-        //   .then((res) => console.log(res))
-        //   .catch((err) => console.error(err));
+
       }
 
       const ai_make_choice = (tried_times) => {
@@ -208,7 +215,9 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
       
 
     }
-  
+  } else {
+    // game over, calculate some values
+  }
 
   return (
     <>
@@ -241,40 +250,40 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
 //   setCurrentMove(0);
 // };
 
-export default function Game() {
-  const [history, setHistory] = useState([initializeBoard()]);
-  const [currentMove, setCurrentMove] = useState(0);
-  const xIsNext = currentMove % 2 === 0;
-  const currentSquares = history[currentMove];
+// export default function Game() {
+//   const [history, setHistory] = useState([initializeBoard()]);
+//   const [currentMove, setCurrentMove] = useState(0);
+//   const xIsNext = currentMove % 2 === 0;
+//   const currentSquares = history[currentMove];
 
-  function initializeBoard() {
-    const initialSquares = Array(64).fill(null); // Assuming a 64-square board
-    initialSquares[27] = 'O'; // Black piece
-    initialSquares[28] = 'X'; // White piece
-    initialSquares[35] = 'X'; // White piece
-    initialSquares[36] = 'O'; // Black piece
-    return initialSquares;
-  }  
+//   function initializeBoard() {
+//     const initialSquares = Array(64).fill(null); // Assuming a 64-square board
+//     initialSquares[27] = 'O'; // Black piece
+//     initialSquares[28] = 'O'; // White piece
+//     initialSquares[35] = 'O'; // White piece
+//     initialSquares[36] = 'O'; // Black piece
+//     return initialSquares;
+//   }  
 
-  function handlePlay(nextSquares) {
-    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
-    setHistory(nextHistory);
-    setCurrentMove(nextHistory.length - 1);
-  }
+//   function handlePlay(nextSquares) {
+//     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+//     setHistory(nextHistory);
+//     setCurrentMove(nextHistory.length - 1);
+//   }
 
-  function jumpTo(nextMove) {
-    setCurrentMove(nextMove);
-  }
+//   function jumpTo(nextMove) {
+//     setCurrentMove(nextMove);
+//   }
 
-  return (
-    <div className="game">
-      <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
-        <button onClick={() => jumpTo(0)}>Go to game start</button>
-      </div>
-    </div>
-  );
-}
+//   return (
+//     <div className="game">
+//       <div className="game-board">
+//         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+//         <button onClick={() => jumpTo(0)}>Go to game start</button>
+//       </div>
+//     </div>
+//   );
+// }
 
 
 function countPieces(squares) {

@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom'; // Import useHistory
-
-import OthelloBoard from './OthelloBoard'; // Import your 8x8 board component
-import {Square, Board} from './OthelloBoard';
+import { Board } from './OthelloBoard';
 import './styling_for_game_page.css'
 
 function initializeBoard() {
@@ -39,9 +36,6 @@ const OthelloGame = () => {
   const [currentMove, setCurrentMove] = useState(0);
   const [flag, setFlag] = useState(0);
   const [xIsNext, setXIsNext] = useState(true);
-  console.log(flag);
-  console.log(xIsNext);
-  console.log(currentMove);
   const currentSquares = history[currentMove];
  
   
@@ -79,7 +73,7 @@ const OthelloGame = () => {
 
   // Handle navigation to home
   const handleGoHome = () => {
-    history.push('/'); // Navigate to OthelloPage
+    history.push('/'); // Navigate to OthelloPage // TODO fix issue
   };
 //
   return (
