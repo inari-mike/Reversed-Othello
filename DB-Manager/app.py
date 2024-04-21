@@ -4,62 +4,53 @@ from redis_util import Redis
 
 app = Flask(__name__)
 redis_handler = Redis()
+wait_time_default = 1000 # million sec
+
 
 @app.route('/')
 def hello():
     return 'Hello, this is DB-Manager!'
 
-# F5
-@app.route('/update_record', methods=['POST'])  
+
+@app.route('/get_choice', methods=['GET'])
+def get_choice():
+    """
+    example get args:
+    ?state=XO.X
+    """
+    print("hit get_choice!!!")
+    state = request.args.get('state')
+    hash_of_state = hash(state) # TODO
+    print(state)
+    print(hash_of_state)
+
+    record = redis_handler.get_record(hash_of_state)
+
+    if record is dict:
+        return jsonify(200, record["action"])
+    
+    else:
+        # TODO here call create agent
+        redis_handler.create_record(
+            hash_of_state=hash(state),  # TODO
+            wait_time=wait_time_default
+        )
+        return jsonify(200, "please wait")
+
+
+@app.route('/update_record', methods=['GET'])
 def update_record():
     """
-    example post content:
-    '{"hash_of_state": -7689071305868051212, "action": null}'
+    example get args:
+    ?hash_of_state=-7689071305868051212&action=1,0
     """
-    hash_action = request.get_json()
-    print(hash_action)
-    hash_of_state = hash_action["hash_of_state"]
-    action = hash_action["action"]
+    print("hit update_record!!!")
+    hash_of_state = request.args.get('hash_of_state')
+    action = request.args.get('action')
+    print(hash_of_state, action)
     redis_handler.update_record(hash_of_state, action)
     return jsonify(200, "update record success!")
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# @app.route('/create_agent', methods=['POST'])  
-# def create_agent():
-
-#     state = request.json.get('state')
-#     wait_time = request.json.get('wait_time')
-    
-#     # check
-#     if not state or not wait_time:
-#         return jsonify({'error': 'Missing required parameters'})
-#     # connection
-#     r = get_redis_connection()
-#     if r.set(state, wait_time):
-#         return jsonify({'New Agent has been created!'})
-#     else:
-#         return jsonify({'error': 'Failed to create agent in Redis'})
-#     '''check 200/500/404'''
-
-# ''' docker exec -it redis-test redis-cli'''
-
-
-
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=3001, debug=True)
-
-

@@ -47,9 +47,9 @@ class Redis:
         r = self.get_redis_connection()
         r.set(hash_of_state, record_str)
 
-    def get_record(self, hash_of_state: int) -> dict:
+    def get_record(self, hash_of_state: int) -> dict | None:
         r = self.get_redis_connection()
-        record_str: str = r.get(hash_of_state)
+        record_str: str = r.get(hash_of_state) # TODO error handling
         record: dict = json.loads(record_str)
         return record
 
