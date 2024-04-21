@@ -13,9 +13,9 @@ export function Square({ value, onSquareClick, highlight }) {
   );
 }
 
-export function Board({ xIsNext, squares, onPlay }) {
+export function Board({ xIsNext, squares, onPlay, flag }) {
   const boardSize = 8;
-
+  let validMoves = calculateValidMoves();
   function calculateFlippedSquares(i) {
     const flippedSquares = [];
     // Define the directions to check for valid flips
@@ -76,8 +76,8 @@ export function Board({ xIsNext, squares, onPlay }) {
         }
       }
     }
-    console.log(xIsNext)
-    console.log(validMoves)
+    // console.log(xIsNext)
+    // console.log(validMoves)
 
     return validMoves;
   }  
@@ -108,34 +108,43 @@ export function Board({ xIsNext, squares, onPlay }) {
       nextSquares[i] = 'X';
     } else {
       nextSquares[i] = 'O';
-    }
-    onPlay(nextSquares);
-  }
-  const validMoves = calculateValidMoves();
-  let status;
-  if (validMoves.length === 0) {
-    const winner = countPieces(squares);
-    if (winner != "Draw") {
-      // console.log('w')
-      status = 'Winner: ' + winner;
-    } else {
-      status = 'Draw';
-      // console.log('D')
-
     };
-    } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
-    // console.log('n')
-
+    onPlay(nextSquares,flag,!xIsNext);
+    if (validMoves.length === 0){
+      console.log("ha????");
+      // flag = 1-flag;
+      // console.log(xIsNext);
+      // xIsNext = !xIsNext;
+      // console.log(xIsNext);
+      // validMoves = calculateValidMoves();
+    };    
   }
-  // const winner = calculateWinner(squares);
-  // let status;
-  // if (winner) {
-  //   status = 'Winner: ' + winner;
-  // } else {
-  //   status = 'Next player: ' + (xIsNext ? 'X' : 'O');
-  // }
 
+
+  if (validMoves.length === 0){
+    console.log("ha????");
+    flag = 1-flag;
+    console.log(xIsNext);
+    xIsNext = !xIsNext;
+    console.log(xIsNext);
+    validMoves = calculateValidMoves();
+  };
+
+  let status;
+  // if (validMoves.length === 0) {
+  //   const winner = countPieces(squares);
+  //   if (winner != "Draw") {
+  //     // console.log('w')
+  //     status = 'Winner: ' + winner;
+  //   } else {
+  //     status = 'Draw';
+  //     // console.log('D')
+
+  //   };
+  //   } else {
+    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+
+  
 
   return (
     <>
