@@ -4,7 +4,7 @@ import json
 
 class DBManager:
     
-    def __init__(self, host: str="localhost", port: int=3001) -> None:
+    def __init__(self, host: str="db-manager", port: int=3001) -> None:
         self.uri = f"http://{host}:{port}"
         self.endpoints = {
             "update_record": f"{self.uri}/update_record",
