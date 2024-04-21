@@ -27,7 +27,7 @@ if __name__ == '__main__':
     agent_time_limited = agent.extra(time_limit)
     best_move:othello.OthelloMove = agent_time_limited.choose_move(game_state)
     best_move_str = f"{best_move.x},{best_move.y}"
-    print("best_move_str:", best_move_str)
+    # print("best_move_str:", best_move_str)
 
     # call DB Manager
     dm = DBManager()
