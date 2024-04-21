@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
 from redis_util import Redis
 import hashlib
 from ai_engine import AIEngine
 from datetime import datetime
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 redis_handler = Redis() # ATTENTION: no arg for docker compose
 
 ai_handler = AIEngine(port=3002)
@@ -17,6 +21,7 @@ def hello():
 
 
 @app.route('/get_choice', methods=['GET'])
+@cross_origin()
 def get_choice():
     """
     example get args:
@@ -70,7 +75,7 @@ def get_choice():
                 res = jsonify(200, "please wait(2)", expire_timestamp)
             
         else:
-            res = jsonify(200, record["action"])
+            res = jsonify(200, "ready", record["action"])
 
     res.headers.add('Access-Control-Allow-Origin', '*') # disable CORs
     return res
