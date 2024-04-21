@@ -49,7 +49,7 @@ def get_choice():
         
         expire_timestamp = current_timestamp + time_limit_default + extra_wait_time
         
-        return jsonify(200, "please wait(0)", expire_timestamp)
+        res =  jsonify(200, "please wait(0)", expire_timestamp)
     
     else:
         
@@ -59,7 +59,7 @@ def get_choice():
             expire_timestamp = int(record["expire_timestamp"])
             
             if current_timestamp > expire_timestamp: # over due
-                return jsonify(200, "please wait(1)", expire_timestamp)
+                res =  jsonify(200, "please wait(1)", expire_timestamp)
                 
             else:
                 # create new agent
@@ -67,11 +67,13 @@ def get_choice():
                     state=state,
                     time_limit=time_limit_default
                 )
-                return jsonify(200, "please wait(2)", expire_timestamp)
+                res = jsonify(200, "please wait(2)", expire_timestamp)
             
         else:
-            return jsonify(200, record["action"])
-    
+            res = jsonify(200, record["action"])
+
+    res.headers.add('Access-Control-Allow-Origin', '*') # disable CORs
+    return res
     
 
 
