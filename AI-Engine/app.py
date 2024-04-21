@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import subprocess
 
 app = Flask(__name__)
@@ -10,7 +10,11 @@ def hello():
 
 @app.route('/create_agent')
 def create_agent():
-    subprocess.Popen(["python3", "othello/main.py", "random", "extra", "1000"])
+    state = request.args.get('state')
+    time_limit = request.args.get('time_limit')
+
+    # subprocess.Popen(["python3", "othello/main.py", "random", "extra", "1000"])
+    subprocess.Popen(["python3", "othello/create_worker.py", state, time_limit])
     return 'New Agent has been created!'
 
 if __name__ == '__main__':

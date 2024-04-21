@@ -85,7 +85,7 @@ class State:
                     score += 1
                 if self.board[i][j] == PLAYER2:
                     score -= 1
-        return score
+        return - score # TODO: change to '-score' (Done)
     
     #  Returns the list of possible moves for player 'player'
     def generateMoves(self, player = None):
