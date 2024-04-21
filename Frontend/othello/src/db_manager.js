@@ -16,11 +16,11 @@ export class DBManager {
 
         const queryString = new URLSearchParams(params).toString();
         const res = await fetch(
-            `${this.endpoints.get_choice}?${queryString}`,
-            {mode: 'no-cors'}
+            `${this.endpoints.get_choice}?${queryString}`
+            // {mode: 'no-cors'}
         );
-        // const data = await res.json(); // TODO
-        const data = [200, "ready", '7,0']; // FAKE
+        const data = await res.json(); // TODO/
+        // const data = [200, "ready", '7,0']; // FAKE
         return data;
     }
 }
