@@ -62,8 +62,19 @@ class Redis:
 
     def update_record(self, hash_of_state: str, action: list[int]):
         record = self.get_record(hash_of_state)
-        record["action"] = action
-        record_str: str = json.dumps(record)
-        r = self.get_redis_connection()
-        r.set(hash_of_state, record_str)
+        if record is None:
+            current_timestamp = int(datetime.now().timestamp())
+            record_str: str = json.dumps(
+                {
+                    "action": action,
+                    "expire_timestamp": current_timestamp
+                }
+            )
+            r = self.get_redis_connection()
+            r.set(hash_of_state, record_str)
+        else:
+            record["action"] = action
+            record_str: str = json.dumps(record)
+            r = self.get_redis_connection()
+            r.set(hash_of_state, record_str)
         
