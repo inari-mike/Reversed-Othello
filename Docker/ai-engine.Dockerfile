@@ -12,4 +12,4 @@ RUN pip install flask
 
 EXPOSE 3002
 RUN chmod +x ./run.sh
-ENTRYPOINT [ "./run.sh" ]
+ENTRYPOINT [ "sh", "run.sh" ]
