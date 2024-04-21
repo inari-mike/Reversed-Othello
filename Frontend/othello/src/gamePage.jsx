@@ -71,14 +71,14 @@ return (
   <div className="othello-game">
     <h1>Othello Game</h1>
     <div className="timer">Timer: {timer} seconds</div>
-    <div className="turn-block">Player's Turn: {playerTurn}</div>
     <div className="button-container">
       <button className="home-button" onClick={handleGoHome}><AiOutlineHome /></button>
       <button className="reset-button" onClick={handleReset}><BiRefresh /></button>
     </div>
-    <div className="total-steps">Total Steps: {totalSteps}</div>
-    {/* Add your 8x8 board component here */}
-    <OthelloBoard />
+    <div className="total-steps">Total Steps: {currentMove}</div>
+    <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} flag={flag}/>
+    </div>
   </div>
 );
 
