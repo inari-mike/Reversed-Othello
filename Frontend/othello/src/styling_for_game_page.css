@@ -10,36 +10,7 @@
     font-size: 24px;
     text-align: center;
   }
-  
-  .home-button {
-    width: 40px;
-    height: 40px;
-    background-image: url("/public/images/home_icon.png");
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    border: none;
-    padding: 10px;
-    text-indent: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-  }
 
-  .reset-button {
-    width: 40px; /* Adjust based on the size of your icon */
-    height: 40px; /* Adjust based on the size of your icon */
-    background-image: url("/public/images/reset_icon.png");
-    background-repeat: no-repeat;
-    background-position: center; /* This will position the icon in the center */
-    background-size: contain; /* This will make sure the icon fits within the button */
-    border: none; /* Remove the default button border */
-    text-indent: -9999px; /* This will hide any text inside the button */
-
-    /* Flexbox properties for centering */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
   
   
   .total-steps {
@@ -58,5 +29,85 @@
     text-align: center;
   }
   
+  .othello-game {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* This will space out your elements */
+    align-items: center; /* This will center the child elements horizontally */
+  }
+  
+  .timer {
+    font-family: 'Digital-7 Mono', sans-serif; /* This is a digital clock style font */
+    font-size: 24px;
+    text-align: center;
+  }
+
+  
+  
+  .total-steps {
+    font-family: 'Courier New', Courier, monospace; /* This is a nice looking font */
+    font-size: 18px;
+    text-align: center;
+  }
+  .othello-game h1 {
+    text-align: center;
+  }
+  /* .game-title {
+    text-align: center;
+  } */
+  
+  .turn-block {
+    text-align: center;
+  }
+  
+  
+  .othello-game h1 {
+    text-align: center;
+    font-family: 'Comic Sans MS', 'Comic Neue', cursive; /* This font has a bubbly feel */
+    color: #006400; /* Dark green, reminiscent of an Othello board */
+    text-shadow: 4px 4px 0px rgba(0,0,0,0.2); /* Gives a slight 3D effect */
+    font-size: 48px; /* Larger font size for emphasis */
+    margin: 0;
+    padding: 20px;
+    background-color: #98FB98; /* Pale green background for contrast */
+    border-radius: 20px; /* Rounded corners for a bubbly look */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* Soft shadow for depth */
+  }
+  
+  /* Additional styling for the game container */
+  .othello-game {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    padding: 20px;
+    border: 2px solid #006400; /* Dark green border */
+    border-radius: 20px; /* Rounded corners to match the title */
+    background-color: #F0FFF0; /* Very pale green, for a subtle board-like feel */
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: center; /* Align buttons horizontally */
+    gap: 10px; /* Space between buttons */
+  }
+  
+  .home-button, .reset-button {
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px; /* Rounded corners for a bubbly look */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); /* Soft shadow for depth */
+    transition: background-color 0.3s ease;
+    background-color: #FA8072; /* Salmon pink background */
+    color: white; /* White text color */
+  }
+  
+  .home-button:hover, .reset-button:hover {
+    transform: scale(1.1); /* Slightly enlarge button on hover for a playful effect */
+  }
+  
+  /* You can add individual styles for .home-button and .reset-button if needed */
   
   

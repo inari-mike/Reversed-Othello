@@ -1,5 +1,7 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect  } from 'react';
+import GameModal from './GameModal';
+
 import './OthelloBoardStyle.css'
 
 function Square({ value, onSquareClick, highlight }) {
@@ -15,6 +17,17 @@ function Square({ value, onSquareClick, highlight }) {
 
 function Board({ xIsNext, squares, onPlay }) {
   const boardSize = 8;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Function to open the modal
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   function calculateFlippedSquares(i) {
     const flippedSquares = [];
@@ -76,8 +89,9 @@ function Board({ xIsNext, squares, onPlay }) {
         }
       }
     }
-    console.log(xIsNext)
-    console.log(validMoves)
+    // console.log(xIsNext)
+    // console.log(validMoves)
+    //seems as though there is a loop constantly runnning here
 
     return validMoves;
   }  
@@ -110,24 +124,45 @@ function Board({ xIsNext, squares, onPlay }) {
       nextSquares[i] = 'O';
     }
     onPlay(nextSquares);
+    const winner = countPieces(nextSquares);
+    if (winner !== "Draw" || validMoves.length === 0) {
+      openModal(); // Open modal when there's a winner or draw
+    }
   }
+  function handleReset() {
+    // Reset the game state here
+    closeModal(); // Close the modal after resetting
+  }
+
+  function handleBackToGame() {
+    // Handle navigation back to the game page
+    closeModal(); // Close the modal after navigating back
+  }
+
+  //useEffect(() => {
   const validMoves = calculateValidMoves();
   let status;
   if (validMoves.length === 0) {
     const winner = countPieces(squares);
     if (winner != "Draw") {
-      // console.log('w')
+      //console.log('w')
+      alert('Winner: ' + winner); // Popup for winner
+
       status = 'Winner: ' + winner;
     } else {
       status = 'Draw';
-      // console.log('D')
+      alert('Draw'); // Popup for draw
 
+      // console.log('D')
+      
     };
+    //setIsModalOpen(true); // Show the modal
     } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
     // console.log('n')
 
   }
+//}, [squares,xIsNext]);
   // const winner = calculateWinner(squares);
   // let status;
   // if (winner) {
@@ -158,6 +193,10 @@ function Board({ xIsNext, squares, onPlay }) {
           })}
         </div>
       ))}
+      {/* Board rendering logic... */}
+      {isModalOpen && (
+        <GameModal isOpen={isModalOpen} onClose={closeModal} status={status} />
+      )}
     </>
   ); 
 }
@@ -227,3 +266,7 @@ function countPieces(squares) {
     return "Draw";
   }
 }
+
+// export function printSomeStuff(){
+//   console.log("hello");
+// }
