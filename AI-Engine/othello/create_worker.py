@@ -23,6 +23,14 @@ if __name__ == '__main__':
         boardSize=8,
         nextPlayerToMove=othello.PLAYER2 # X
     )
+
+    print("Available Moves:")
+    i = 0
+    for move in game_state.generateMoves():
+        i = i + 1
+        print(f"{i}. {str(move)}")
+    print("Start Searching...\r")
+
     time_limit = int(sys.argv[2])
     agent_time_limited = agent.extra(time_limit)
     best_move:othello.OthelloMove = agent_time_limited.choose_move(game_state)
@@ -30,7 +38,7 @@ if __name__ == '__main__':
     # print("best_move_str:", best_move_str)
 
     # call DB Manager
-    dm = DBManager()
+    dm = DBManager(host="localhost")
     hash_of_state = hashlib.sha256(game_state_str.encode('ascii')).hexdigest()
     
     try:
