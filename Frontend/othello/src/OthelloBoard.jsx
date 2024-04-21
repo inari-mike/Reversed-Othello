@@ -8,7 +8,7 @@ export function Square({ value, onSquareClick, highlight, xIsNext}) {
   const squareClassName = `square ${highlight ? 'highlighted' : ''}`;
 
   return (
-    <button className={squareClassName} onClick={onSquareClick} disabled={!highlight || !xIsNext}>
+    <button className={squareClassName} onClick={onSquareClick} disabled={!highlight}>
       {value}
       {highlight && <span className="highlight-text">·</span>}
     </button>
@@ -117,22 +117,23 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
       // validMoves = calculateValidMoves();
     };    
   }
-  async function processResponse(state) {
-    try {
-      const res = await dm.get_choice(state);
+
+  // async function processResponse(state) {
+  //   try {
+  //     const res = await dm.get_choice(state);
   
-      if (res[1] === 'please wait(0)') {
-        const waitUntil = res[2]; // Assuming waitUntil is a valid timestamp
-        await waitUntilTimestamp(waitUntil); // Implement this function to wait until the specified time
-        return processResponse(state); // Recurse to get the updated response
-      } else {
-        return res[1];
-      }
-    } catch (err) {
-      console.error('Error fetching data:', err);
-      // Handle error appropriately (e.g., return an error message)
-    }
-  }
+  //     if (res[1] === 'please wait(0)') {
+  //       const waitUntil = res[2]; // Assuming waitUntil is a valid timestamp
+  //       await waitUntilTimestamp(waitUntil); // Implement this function to wait until the specified time
+  //       return processResponse(state); // Recurse to get the updated response
+  //     } else {
+  //       return res[1];
+  //     }
+  //   } catch (err) {
+  //     console.error('Error fetching data:', err);
+  //     // Handle error appropriately (e.g., return an error message)
+  //   }
+  // }
   
 
   if (validMoves.length === 0){
@@ -156,22 +157,36 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
     };
     
-    if (xIsNext) {
-      status = "Your turn(X)!";
-    } else {
-      const nextSquares = squares.slice();
-      console.log(nextSquares);
-      const strState = nextSquares.map(item => (item === null ? '.' : item)).join('');
-      // TODO: wait for backend
-      console.log(strState)
-      processResponse(strState)
-        .then(result => console.log('Processed result:', result))
-        .catch(err => console.error('Error processing response:', err));
-      // dm.get_choice(strState)
-      //   .then((res) => console.log(res))
-      //   .catch((err) => console.error(err));
+    // if (xIsNext) {
+    //   status = "Your turn(X)!";
+    // } else {
+    //   const nextSquares = squares.slice();
+    //   console.log(nextSquares);
+    //   const strState = nextSquares.map(item => (item === null ? '.' : item)).join('');
+    //   // TODO: wait for backend
+    //   console.log(strState)
+    //   // processResponse(strState)
+    //   //   .then(result => console.log('Processed result:', result))
+    //   //   .catch(err => console.error('Error processing response:', err));
+    //   const res = dm.get_choice(strState);
+    //   if (res[1] === 'please wait(0)') {
+    //     const waitUntil = res[2]; // Assuming waitUntil is a valid timestamp
+    //     // await waitUntilTimestamp(waitUntil); // Implement this function to wait until the specified time
+    //     // return processResponse(state); // Recurse to get the updated response
+    //     const currentTimestamp = Date.now(); // Current timestamp in milliseconds
+    //     const timeDifference = waitUntil - currentTimestamp; // Time difference in milliseconds
+    //     const secondsRemaining = Math.ceil(timeDifference / 1000);
+    //     status = "Please wait ${seconds}s"
+    //   } else {
+    //     const [x,y] = res[1].str.split(',');
+    //     const index = Number(x) * 8 + Number(y);
+    //     handleClick(index)
 
-    }
+    //   }
+    //   //   .then((res) => console.log(res))
+    //   //   .catch((err) => console.error(err));
+
+    // }
   
 
   return (
