@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import './OthelloBoardStyle.css'
 
-function Square({ value, onSquareClick, highlight }) {
+export function Square({ value, onSquareClick, highlight }) {
   const squareClassName = `square ${highlight ? 'highlighted' : ''}`;
 
   return (
@@ -13,7 +13,7 @@ function Square({ value, onSquareClick, highlight }) {
   );
 }
 
-function Board({ xIsNext, squares, onPlay }) {
+export function Board({ xIsNext, squares, onPlay }) {
   const boardSize = 8;
 
   function calculateFlippedSquares(i) {
@@ -162,6 +162,11 @@ function Board({ xIsNext, squares, onPlay }) {
   ); 
 }
 
+// export function jumpto(){
+//   const [currentMove, setCurrentMove] = useState(0);
+//   setCurrentMove(0);
+// };
+
 export default function Game() {
   const [history, setHistory] = useState([initializeBoard()]);
   const [currentMove, setCurrentMove] = useState(0);
@@ -186,19 +191,12 @@ export default function Game() {
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
   }
-  const moves = history.map((squares, move) => (
-    <li key={move}>
-      {move === 0 && (
-        <button onClick={() => jumpTo(move)}>Go to game start</button>
-      )}
-    </li>
-  ));
-    
 
   return (
     <div className="game">
       <div className="game-board">
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <button onClick={() => jumpTo(0)}>Go to game start</button>
       </div>
     </div>
   );
