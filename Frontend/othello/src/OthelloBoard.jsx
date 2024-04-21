@@ -2,11 +2,11 @@ import React from 'react';
 import { useState } from 'react';
 import './OthelloBoardStyle.css'
 
-export function Square({ value, onSquareClick, highlight }) {
+export function Square({ value, onSquareClick, highlight, xIsNext}) {
   const squareClassName = `square ${highlight ? 'highlighted' : ''}`;
 
   return (
-    <button className={squareClassName} onClick={onSquareClick} disabled={!highlight}>
+    <button className={squareClassName} onClick={onSquareClick} disabled={!highlight || !xIsNext}>
       {value}
       {highlight && <span className="highlight-text">·</span>}
     </button>
@@ -65,7 +65,6 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
 
     return flippedSquares;
   }
-
   function calculateValidMoves() {
     const validMoves = [];
     for (let i = 0; i < boardSize * boardSize; i++) {
@@ -88,7 +87,6 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
     // }
     const nextSquares = squares.slice();
     const flippedSquares = calculateFlippedSquares(i);
-    // const validMoves = calculateValidMoves();
 
 
     if (flippedSquares.length >= 0) {
@@ -97,11 +95,6 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
       });
     }
 
-    // if (validMoves.length >= 0) {
-    //   validMoves.forEach((index) => {
-    //     nextSquares[index] = 'G';
-    //   });
-    // }
 
 
     if (xIsNext) {
@@ -122,7 +115,6 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
 
 
   if (validMoves.length === 0){
-    console.log("ha????");
     flag = 1-flag;
     console.log(xIsNext);
     xIsNext = !xIsNext;
@@ -131,19 +123,26 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
   };
 
   let status;
-  // if (validMoves.length === 0) {
-  //   const winner = countPieces(squares);
-  //   if (winner != "Draw") {
-  //     // console.log('w')
-  //     status = 'Winner: ' + winner;
-  //   } else {
-  //     status = 'Draw';
-  //     // console.log('D')
+  if (validMoves.length === 0) {
+    const winner = countPieces(squares);
+    if (winner != "Draw") {
+      // console.log('w')
+      status = 'Winner: ' + winner;
+    } else {
+      status = 'Draw';
+      // console.log('D')
 
-  //   };
-  //   } else {
+    };
+    } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
-
+    };
+    
+    if (xIsNext) {
+      status = "Your turn(X)!";
+    } else {
+      const nextSquares = squares.slice();
+      console.log(nextSquares);
+    }
   
 
   return (
@@ -162,6 +161,7 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
                 value={squares[index]}
                 onSquareClick={() => handleClick(index)}
                 highlight={isMoveValid} // Add this prop to Square component
+                xIsNext={xIsNext}
               />
             );
           })}
