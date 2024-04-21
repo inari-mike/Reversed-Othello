@@ -2,7 +2,7 @@ import requests
 
 
 class AIEngine:
-    def __init__(self, host: str="localhost", port: int=3002) -> None:
+    def __init__(self, host: str="ai-engine", port: int=3002) -> None:
         self.uri = f"http://{host}:{port}"
         self.endpoints = {
             "create_agent": f"{self.uri}/create_agent"
