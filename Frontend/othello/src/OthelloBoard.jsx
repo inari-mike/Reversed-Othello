@@ -117,7 +117,23 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
       // validMoves = calculateValidMoves();
     };    
   }
-
+  async function processResponse(state) {
+    try {
+      const res = await dm.get_choice(state);
+  
+      if (res[1] === 'please wait(0)') {
+        const waitUntil = res[2]; // Assuming waitUntil is a valid timestamp
+        await waitUntilTimestamp(waitUntil); // Implement this function to wait until the specified time
+        return processResponse(state); // Recurse to get the updated response
+      } else {
+        return res[1];
+      }
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      // Handle error appropriately (e.g., return an error message)
+    }
+  }
+  
 
   if (validMoves.length === 0){
     flag = 1-flag;
@@ -148,9 +164,12 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
       const strState = nextSquares.map(item => (item === null ? '.' : item)).join('');
       // TODO: wait for backend
       console.log(strState)
-      dm.get_choice(strState)
-        .then((res) => console.log(res))
-        .catch((err) => console.error(err));
+      processResponse(strState)
+        .then(result => console.log('Processed result:', result))
+        .catch(err => console.error('Error processing response:', err));
+      // dm.get_choice(strState)
+      //   .then((res) => console.log(res))
+      //   .catch((err) => console.error(err));
 
     }
   
