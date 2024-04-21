@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import './OthelloBoardStyle.css'
+import axios from 'axios'
 
 export function Square({ value, onSquareClick, highlight, xIsNext}) {
   const squareClassName = `square ${highlight ? 'highlighted' : ''}`;
@@ -130,8 +131,6 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
       status = 'Winner: ' + winner;
     } else {
       status = 'Draw';
-      // console.log('D')
-
     };
     } else {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
@@ -142,6 +141,10 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
     } else {
       const nextSquares = squares.slice();
       console.log(nextSquares);
+
+      
+
+
     }
   
 
