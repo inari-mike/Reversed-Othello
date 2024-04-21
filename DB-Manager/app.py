@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from redis_util import Redis
-
+import hashlib
 
 app = Flask(__name__)
 redis_handler = Redis()
@@ -20,7 +20,8 @@ def get_choice():
     """
     print("hit get_choice!!!")
     state = request.args.get('state')
-    hash_of_state = hash(state) # TODO
+    # hash_of_state = hash(state) # TODO
+    hash_of_state = hashlib.sha256(state.encode('ascii')).hexdigest()
     print(state)
     print(hash_of_state)
 
@@ -32,7 +33,7 @@ def get_choice():
     else:
         # TODO here call create agent
         redis_handler.create_record(
-            hash_of_state=hash(state),  # TODO
+            hash_of_state=hash_of_state,
             wait_time=wait_time_default
         )
         return jsonify(200, "please wait")

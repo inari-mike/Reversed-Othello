@@ -34,7 +34,7 @@ class Redis:
         )
 
 
-    def create_record(self, hash_of_state: int, wait_time: int) -> None:
+    def create_record(self, hash_of_state: str, wait_time: int) -> None:
         """wait_time: count in second"""
         current_timestamp = int(datetime.now().timestamp())
         expire_timestamp: int = current_timestamp + wait_time
@@ -47,17 +47,34 @@ class Redis:
         r = self.get_redis_connection()
         r.set(hash_of_state, record_str)
 
-    def get_record(self, hash_of_state: int) -> dict | None:
+    def get_record(self, hash_of_state: str) -> dict | None:
         r = self.get_redis_connection()
         record_str: str = r.get(hash_of_state) # TODO error handling
-        record: dict = json.loads(record_str)
-        return record
+        if record_str is None:
+            return None
+        else:
+            try:
+                record: dict = json.loads(record_str)
+                return record
+            except:
+                return None
 
 
-    def update_record(self, hash_of_state: int, action: list[int]):
+    def update_record(self, hash_of_state: str, action: list[int]):
         record = self.get_record(hash_of_state)
-        record["action"] = action
-        record_str: str = json.dumps(record)
-        r = self.get_redis_connection()
-        r.set(hash_of_state, record_str)
+        if record is None:
+            current_timestamp = int(datetime.now().timestamp())
+            record_str: str = json.dumps(
+                {
+                    "action": action,
+                    "expire_timestamp": current_timestamp
+                }
+            )
+            r = self.get_redis_connection()
+            r.set(hash_of_state, record_str)
+        else:
+            record["action"] = action
+            record_str: str = json.dumps(record)
+            r = self.get_redis_connection()
+            r.set(hash_of_state, record_str)
         
