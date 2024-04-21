@@ -15,7 +15,10 @@ class DBManager {
         };
 
         const queryString = new URLSearchParams(params).toString();
-        const res = await fetch(`${this.endpoints.get_choice}?${queryString}`);
+        const res = await fetch(
+            `${this.endpoints.get_choice}?${queryString}`,
+            {mode: 'no-cors'}
+        );
         const data = await res.json();
         return data;
     }
@@ -23,6 +26,7 @@ class DBManager {
 
 // Demo usage
 const dm = new DBManager();
+
 dm.get_choice("...........................OX......XO...........................")
     .then((res) => console.log(res))
     .catch((err) => console.error(err));
