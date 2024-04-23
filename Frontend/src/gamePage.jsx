@@ -27,7 +27,7 @@ const Timer = (game_start_time) => { // when flag change, clear Timer
 
   return (
     <div className="timer">
-      Timer: {sec_display} seconds
+      Waiting for your choice: {sec_display}s
     </div>
   )
 }
@@ -53,44 +53,53 @@ const OthelloGame = () => {
 
   const [game_reset_times, set_game_reset_times] = useState(0);
 
-  // Timer effect (runs once on component mount)
-  useEffect(() => {
-    // const interval = setInterval(() => {
-    //   setTimer((prevTimer) => prevTimer + 1);
-    // }, 1000);
+  // // Timer effect (runs once on component mount)
+  // useEffect(() => {
+  //   // const interval = setInterval(() => {
+  //   //   setTimer((prevTimer) => prevTimer + 1);
+  //   // }, 1000);
 
-    // return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+  //   // return () => clearInterval(interval); // Cleanup on unmount
+  // }, []);
 
   // Reset game
   const handleReset = () => {
-    setFlag(0);
-    // setTimer(0);
-    set_game_reset_times(prev=>prev+1);
-    jumpTo(0);
-    setXIsNext(true);
+    if (confirm("Are you sure you want to reset the game?")) {
+      setFlag(0);
+      // setTimer(0);
+      set_game_reset_times(prev=>prev+1);
+      jumpTo(0);
+      setXIsNext(true);
+    }
   };
 
   // Handle navigation to home
   const handleGoHome = () => {
-    history.push('/'); // Navigate to OthelloPage // TODO fix issue
+    // history.push('/'); // Navigate to OthelloPage // TODO fix issue
+    if (confirm("Go back to the home page? The game state will not be saved.")) {
+      window.location.href = "../";
+    }
   };
 //
   return (
     <div className="othello-game">
-      <h1>Othello Game</h1>
+      <h1>Save Tim (Reversed Othello)</h1>
+      <h6>Target: Lose the Game</h6>
       {/* <div className="timer">Timer: {timer} seconds</div> */}
-      <Timer game_start_time={game_reset_times}></Timer>
-      <button className="home-button" onClick={handleGoHome}></button>
-      <button className="reset-button" onClick={handleReset}>
-        Reset
-      </button>
+      <div className='button-container'>
+        <button className="home-button" onClick={handleGoHome}></button>
+        <button className="reset-button" onClick={handleReset}>
+          Reset
+        </button>
+      </div>
       <div className="total-steps">Total Steps: {currentMove}</div>
       {/* Add your 8x8 board component here */}
       <div className="game-board">
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} flag={flag}/>
       </div>
-    </div>  
+      
+      {xIsNext?<Timer game_start_time={game_reset_times}></Timer>:null}
+    </div>
   );
 };
 

@@ -1,0 +1,14 @@
+FROM node:latest AS base
+
+# COPY from Frontend
+COPY . /app 
+
+WORKDIR /app
+
+RUN npm install .
+
+RUN chmod +x ./run.sh
+
+EXPOSE 3000
+
+ENTRYPOINT [ "sh", "run.sh" ]

@@ -1,6 +1,8 @@
 import json
 from datetime import datetime
 import redis
+import os
+
 
 """
 An example of key-value pairs in our DB:
@@ -18,7 +20,17 @@ or
 
 class Redis:
 
-    def __init__(self, host='redis-stack', port=6379, db=0, decode_responses=True) -> None:
+    def __init__(self, host=None, port=6379, db=0, decode_responses=True) -> None:
+               
+        if host is None:
+            redis_domain = os.getenv("redis_domain")
+            if redis_domain is None:
+                host = "localhost"
+            else:
+                host = redis_domain
+                
+        print("redis_domain:", redis_domain)        
+                
         self.host = host
         self.port = port
         self.db = db

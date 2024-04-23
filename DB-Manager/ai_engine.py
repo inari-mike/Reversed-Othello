@@ -1,8 +1,19 @@
 import requests
+import os
 
 
 class AIEngine:
-    def __init__(self, host: str="ai-engine", port: int=3002) -> None:
+    def __init__(self, host: str=None, port: int=3002) -> None:
+        
+        if host is None:
+            ai_engine_domain = os.getenv("ai_engine_domain")
+            if ai_engine_domain is None:
+                host = "localhost"
+            else:
+                host = ai_engine_domain
+                
+        print("ai_engine_domain:", ai_engine_domain)
+                
         self.uri = f"http://{host}:{port}"
         self.endpoints = {
             "create_agent": f"{self.uri}/create_agent"

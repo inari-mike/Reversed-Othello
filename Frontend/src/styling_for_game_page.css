@@ -7,14 +7,15 @@
   
   .timer {
     font-family: 'Digital-7 Mono', sans-serif; /* This is a digital clock style font */
-    font-size: 24px;
+    font-size: 18px;
     text-align: center;
   }
   
   .home-button {
-    width: 40px;
-    height: 40px;
-    background-image: url("/public/images/home_icon.png");
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-image: url("/images/home_icon.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -25,10 +26,19 @@
     overflow: hidden;
   }
 
+  .button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    width: 100px;
+  }
+
   .reset-button {
-    width: 40px; /* Adjust based on the size of your icon */
-    height: 40px; /* Adjust based on the size of your icon */
-    background-image: url("/public/images/reset_icon.png");
+    width: 42px; /* Adjust based on the size of your icon */
+    height: 42px; /* Adjust based on the size of your icon */
+    border-radius: 50%;
+    background-image: url("/images/reset_icon.png");
     background-repeat: no-repeat;
     background-position: center; /* This will position the icon in the center */
     background-size: contain; /* This will make sure the icon fits within the button */

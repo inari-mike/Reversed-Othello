@@ -9,16 +9,26 @@ const OthelloPage = () => {
       {/* Background */}
       <div className="background-image">
         {/* Set your background image here */}
-        {<img src="/public/images/orthello_pic.png" alt="Beautiful Landscape" />}
+        {<img style={{borderRadius: '5px'}} src="/images/orthello_pic.png" alt="Beautiful Landscape" />}
       </div>
 
       {/* Rules of Othello */}
       <div className="rules">
-  <h1>Othello Rules</h1>
+  <h1>Before the Start</h1>
   <p>
-    Othello (also known as Reversi) is a two-player board game played on an 8x8 grid.
-    The goal is to have the majority of your color (black or white) discs on the board
-    at the end of the game. For detailed rules, you can refer to the{' '}
+    Your best friend Tim told his wife that, he is an Othello Master.
+    But actually, he sucks.
+  </p>
+  <p>
+    Today you come to his house and Tim's wife wants to know "how good" he is on Othello.
+  </p>
+  <p>
+    To protect your best friend's glory, you have to play a game with Tim and let him win.
+    Let's go!
+  </p>
+  <p>
+    PS: Othello is a 2-player board game on an 8x8 board.
+    For detailed rules, you can refer to the{' '}  
     <a
       href="https://www.worldothello.org/about/about-othello/othello-rules/official-rules/english"
       target="_blank"
@@ -31,7 +41,7 @@ const OthelloPage = () => {
 </div>
 
 
-<Link to="/othello-game">
+<Link to="/play">
   <button className="play-button">Play Othello</button>
 </Link>
 

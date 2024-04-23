@@ -1,17 +1,16 @@
 FROM python:latest AS base
 
-WORKDIR /app
-
-RUN apt-get update && apt-get install -y git
-
 RUN pip install flask
 RUN pip install requests
 
-RUN git clone https://github.com/inari-mike/Reversed-Othello.git /app
-RUN git checkout main
+# COPY from AI-Engine
+COPY . /app 
 
-WORKDIR /app/AI-Engine
+WORKDIR /app
 
-EXPOSE 3002
 RUN chmod +x ./run.sh
+EXPOSE 3002
+
+ENV db_manager_domain $db_manager_domain
+
 ENTRYPOINT [ "sh", "run.sh" ]

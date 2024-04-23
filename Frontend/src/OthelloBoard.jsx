@@ -151,20 +151,23 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
     const winner = countPieces(squares);
     if (winner != "Draw") {
       // console.log('w')
-      status = 'Winner: ' + winner;
+      // status = 'Winner: ' + winner;
+      status = 'Winner: ' + (winner == 'X'? 'You' : 'Tim');
       // alert(status);
     } else {
       status = 'Draw';
       // alert(status);
     }
   } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+    // status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+    status = 'Tim is thinking...';
     game_not_over = true;
   };
     
   if (game_not_over) {
     if (xIsNext) {
       status = "Your turn(X)!";
+      status = "Your turn! Place a 'X'.";
     } else {
       const nextSquares = squares.slice();
       // console.log(nextSquares);
@@ -183,15 +186,15 @@ export function Board({ xIsNext, squares, onPlay, flag }) {
           handleClick(index)
   
         } else if (String(res[1]).includes("please wait")) {
-          console.log(res)
+          // console.log(res)
           const ready_timestamp_msec = Number.parseInt(res[2]) * 1000
           const current_timestamp_msec = Date.now()
           const wait_time_msec = ready_timestamp_msec - current_timestamp_msec
-          console.log("sleep... in seconds:", wait_time_msec / 1000)
-          console.log("sleep... in seconds:", 5)
+          // console.log("sleep... in seconds:", wait_time_msec / 1000)
+          // console.log("sleep... in seconds:", 5)
           setTimeout(
             () => {
-              console.log("wake up!");
+              // console.log("wake up!");
               ai_make_choice(tried_times + 1)
             },
             5000

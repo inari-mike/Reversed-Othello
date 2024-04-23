@@ -1,10 +1,21 @@
 import requests
 import json
+import os
 
 
 class DBManager:
     
-    def __init__(self, host: str="db-manager", port: int=3001) -> None:
+    def __init__(self, host: str=None, port: int=3001) -> None:
+        
+        if host is None:
+            env_db_manager_domain = os.getenv("db_manager_domain")
+            if env_db_manager_domain is None:
+                host = "localhost"
+            else:
+                host = env_db_manager_domain
+
+        print("env_db_manager_domain:", env_db_manager_domain)
+                
         self.uri = f"http://{host}:{port}"
         self.endpoints = {
             "update_record": f"{self.uri}/update_record",

@@ -1,21 +1,19 @@
 FROM python:latest AS base
 
-WORKDIR /app
-
-RUN apt-get update && apt-get install -y git
-
 RUN pip install flask
 RUN pip install redis
 RUN pip install requests
 RUN pip install flask_cors
 
-RUN git clone https://github.com/inari-mike/Reversed-Othello.git /app
-RUN git checkout main
+# COPY from DB-Manager
+COPY . /app 
 
-WORKDIR /app/DB-Manager
+WORKDIR /app
 
-
-EXPOSE 3001
 RUN chmod +x run.sh
-ENTRYPOINT [ "python3", "app.py" ]
-# ENTRYPOINT [ "sh", "run.sh" ]
+EXPOSE 3001
+
+ENV ai_engine_domain $ai_engine_domain
+ENV redis_domain $redis_domain
+
+ENTRYPOINT [ "sh", "run.sh" ]

@@ -12,7 +12,7 @@ function App() {
       <Router>
         
           <Route exact path="/" component={OthelloPage} /> {/* Render the OthelloPage component */}
-          <Route path="/othello-game" component={OthelloGame} /> {/* Othello game page */}
+          <Route path="/play" component={OthelloGame} /> {/* Othello game page */}
           {/* Other routes */}
         
       </Router>
