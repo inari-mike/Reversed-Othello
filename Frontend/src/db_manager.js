@@ -1,7 +1,8 @@
 // const fetch = require('node-fetch'); // if you working on Node but not Browser
+import { backend_domain } from "./env";
 
 export class DBManager {
-    constructor(host = "localhost", port = 3001) {
+    constructor(host = backend_domain, port = 3001) {
         this.uri = `http://${host}:${port}`;
         this.endpoints = {
             get_choice: `${this.uri}/get_choice`
